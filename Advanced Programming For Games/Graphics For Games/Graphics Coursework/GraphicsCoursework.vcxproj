@@ -54,7 +54,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,12 +71,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dragon.cpp" />
+    <ClCompile Include="EyeTower.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dragon.h" />
+    <ClInclude Include="EyeTower.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Renderer.h" />
