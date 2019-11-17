@@ -12,8 +12,10 @@ public:
 	{
 		OBJMesh* m = new OBJMesh();
 		m->LoadOBJMesh(MESHDIR"Dragon.obj");
-		m->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"DragonTexture1.png", 
+		m->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"Dragontex3.png", 
 			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+	//	m->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"Dragontex1.png",
+//			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 		mesh = m;
 	}
 	static void DeleteMesh()

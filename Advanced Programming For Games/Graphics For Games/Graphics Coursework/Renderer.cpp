@@ -8,22 +8,22 @@
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {
 	Dragon::CreateMesh();
+	Tree::CreateTrunk();
+	Tree::CreateSphere();
+	
 	
 	heightMap = new HeightMap(TEXTUREDIR"Nmap.raw"); //Must used a normal map with the software GIMP and have a size of 256 * 267
 	camera = new Camera(-40, 270, Vector3(-2100, 3300, 2000));
 	quad = Mesh::GenerateQuad();
 	
 	
-	//dragonMesh = new OBJMesh();
-//	dragonMesh->LoadOBJMesh(MESHDIR"Dragon.obj");
-	
 	currentShader = new Shader(SHADERDIR "SceneVertex.glsl",
 		SHADERDIR "SceneFragment.glsl");
-
+	
 	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f),
 		500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
 		Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X) / 2);
-
+	
 	standShader = new  Shader(SHADERDIR"SceneVertex.glsl", 
 		SHADERDIR"SceneFragment.glsl");
 
@@ -74,9 +74,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 
 	
 	root = new SceneNode();
-	root->AddChild(new Dragon());
-	root->AddChild(new EyeTower());
-
+//	root->AddChild(new Dragon());
+//	root->AddChild(new EyeTower());
+	root->AddChild(new Tree());
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -90,17 +90,20 @@ Renderer ::~Renderer(void)
 {
 	delete heightMap;
 	delete camera;
-	//delete root;
+	delete root;
 	delete skyboxShader;
 	delete reflectShader;
 	delete lightShader;
 	delete standShader;
 	delete quad;
 	delete light;
+	delete hellNode;
+	delete hellData;
+
 	Dragon::DeleteMesh();
+	Tree::DeleteMeshes();
 	currentShader = 0;
-	//delete hellNode;
-//	delete hellData;
+
 }
 
 void Renderer::UpdateScene(float msec)
@@ -108,11 +111,60 @@ void Renderer::UpdateScene(float msec)
 	camera->UpdateCamera(msec);
 	viewMatrix = camera->BuildViewMatrix();
 	hellNode->Update(msec);
+	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 	root->Update(msec);
+
 //	waterRotate += msec / 1000; Makes the water move in real time
 }
 
+void Renderer::BuildNodesLists(SceneNode* from)
+{
+	if (frameFrustum.InsideFrustum(*from))
+	{
+		Vector3 dir = from->GetWorldTransform().GetPositionVector() - camera->GetPosition();
+		from->SetCameraDistance(Vector3::Dot(dir, dir));
+
+		if (from->GetColour().w < 1.0f)
+		{
+			transparentNodeList.push_back(from);
+		}
+		else
+		{
+			nodeList.push_back(from);
+		}
+	}
+
+	for (vector<SceneNode*>::const_iterator i = from->GetChildIteratorStart();
+		i != from->GetChildIteratorEnd(); ++i)
+	{
+		BuildNodesLists((*i));
+	}
+	
+}
+
+void Renderer::SortNodeLists()
+{
+	std::sort(transparentNodeList.begin(), transparentNodeList.end(), SceneNode::CompareByCameraDistance);
+	std::sort(nodeList.begin(), nodeList.end(), SceneNode::CompareByCameraDistance);
+}
+
+void Renderer::DrawNodes()
+{
+	for (vector<SceneNode*>::const_iterator i = nodeList.begin();
+		i != nodeList.end(); ++i)
+	{
+		DrawNode(*i);
+	}
+	for (vector < SceneNode* >::const_reverse_iterator i =
+		transparentNodeList.rbegin();
+		i != transparentNodeList.rend(); ++i)
+	{
+		DrawNode((*i));
+	}
+}
 void Renderer::RenderScene() {
+	BuildNodesLists(root);
+	SortNodeLists();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glUseProgram(currentShader->GetProgram());
@@ -121,12 +173,12 @@ void Renderer::RenderScene() {
 	DrawSkyBox();
 	DrawHeightMap();
 	DrawMesh();
-	DrawNode(root);
-
+	//DrawNode(root);
+	DrawNodes();
 //	DrawWater();
 	glUseProgram(0);
 	SwapBuffers();
-
+	ClearNodeLists();
 }
 
 void Renderer::DrawHeightMap()
@@ -160,46 +212,32 @@ void Renderer::DrawMesh()
 	modelMatrix = Matrix4::Translation(Vector3(1600, 500, 2500));
 	UpdateShaderMatrices();
 	hellNode->Draw(*this);
-
-//	modelMatrix = Matrix4::Translation(Vector3(1600, 500, 2500));
-//	UpdateShaderMatrices();
-//	DrawNode(root);
 }
 
 
 void Renderer::DrawNode(SceneNode* n)
 {
-//	modelMatrix.ToIdentity();
-	SetCurrentShader(currentShader);
-//	modelMatrix = Matrix4::Translation(Vector3(1800, 500, 2500));
-//	UpdateShaderMatrices();
+	
 	if (n->GetMesh())
 	{
-		Matrix4 transform = n->GetWorldTransform() *  //Was  		Matrix4 transform =modelMatrix *
-			Matrix4::Scale(n->GetModelScale());
-		glUniformMatrix4fv(
-			glGetUniformLocation(currentShader->GetProgram(),
-				"modelMatrix"), 1, false, (float*)&transform);
+		SetCurrentShader(currentShader);
+		SetShaderLight(*light);
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*) & (n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale())));
 
-		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(),
-			"nodeColour"), 1, (float*)&n->GetColour());
+		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
 
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"useTexture"), (int)n->GetMesh()->GetTexture());
+		glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)n->GetMesh()->GetTexture());
+
 		n->Draw(*this);
-
 	}
 
-	for (vector < SceneNode* >::const_iterator
-		i = n->GetChildIteratorStart();
-		i != n->GetChildIteratorEnd(); ++i)
-	{
-	
-		DrawNode(*i);
-	}
 }
 
-
+void Renderer::ClearNodeLists()
+{
+	transparentNodeList.clear();
+	nodeList.clear();
+}
 
 void Renderer::DrawSkyBox()
 {

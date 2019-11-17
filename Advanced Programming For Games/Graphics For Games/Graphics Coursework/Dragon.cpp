@@ -9,4 +9,6 @@ Dragon::Dragon(void)
 	
 	body->SetTransform(Matrix4::Translation(Vector3(2000, 500, 2500)));
 	AddChild(body);
+
+	body->SetBoundingRadius(100);
 }

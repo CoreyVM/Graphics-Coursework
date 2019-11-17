@@ -30,6 +30,12 @@ public:
 		eyeMesh = _eye;
 	}
 
+	void DeleteTreeMeshes()
+	{
+		delete towerBase;
+		delete eyeMesh;
+	}
+
 	void Update(float msec);
 protected:
 	SceneNode* root;

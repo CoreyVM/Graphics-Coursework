@@ -77,6 +77,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dragon.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

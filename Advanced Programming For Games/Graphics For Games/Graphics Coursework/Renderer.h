@@ -12,6 +12,7 @@
 #include "Plane.h"
 #include "Dragon.h"
 #include "EyeTower.h"
+#include "Tree.h"
 #include <algorithm>
 
 class Renderer : public OGLRenderer
@@ -28,7 +29,7 @@ class Renderer : public OGLRenderer
 //	void SortNodeLists();
 //	void ClearNodeLists();
 //	void DrawNodes();
-	void DrawNode(SceneNode* n);
+
 
 	void SwapTerrainTex();
 	void DrawMesh();
@@ -46,10 +47,16 @@ class Renderer : public OGLRenderer
 	MD5Node* hellNode;
 
 //	OBJMesh* dragonMesh;
-	
-	
+	void  BuildNodesLists(SceneNode* from);
+	void SortNodeLists();
+	void DrawNodes();
+	void DrawNode(SceneNode* n);
+	void ClearNodeLists();
+
+
 	Mesh* quad;
 	Light* light;
+
 
 
 	Shader* standShader;
@@ -59,4 +66,5 @@ class Renderer : public OGLRenderer
 	Frustum frameFrustum;
 
 	vector<SceneNode*> nodeList; //Vector of scenenode objects
+	vector<SceneNode*> transparentNodeList;
 };
