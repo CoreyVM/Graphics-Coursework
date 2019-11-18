@@ -47,6 +47,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		return;
 	}
 
+		quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"water.tga",
+		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
 	cubeMap = SOIL_load_OGL_cubemap(
 		TEXTUREDIR"rusted_west.jpg", TEXTUREDIR"rusted_east.jpg",
 		TEXTUREDIR"rusted_up.jpg", TEXTUREDIR"rusted_down.jpg",
@@ -68,6 +71,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		return;
 	}
 	SetTextureRepeating(heightMap->GetTexture(), true);
+	SetTextureRepeating(quad->GetTexture(), true);
 
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
@@ -82,7 +86,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
+	waterRotate = 0;
 	init = true;
 }
 
@@ -113,8 +117,7 @@ void Renderer::UpdateScene(float msec)
 	hellNode->Update(msec);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 	root->Update(msec);
-
-//	waterRotate += msec / 1000; Makes the water move in real time
+	waterRotate += msec / 1000;
 }
 
 void Renderer::BuildNodesLists(SceneNode* from)
@@ -168,14 +171,13 @@ void Renderer::RenderScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glUseProgram(currentShader->GetProgram());
-	UpdateShaderMatrices();
+	//UpdateShaderMatrices();
 
 	DrawSkyBox();
+	DrawWater();
 	DrawHeightMap();
 	DrawMesh();
-	//DrawNode(root);
 	DrawNodes();
-//	DrawWater();
 	glUseProgram(0);
 	SwapBuffers();
 	ClearNodeLists();
@@ -252,6 +254,39 @@ void Renderer::DrawSkyBox()
 	
 }
 
+void Renderer::DrawWater()
+{
+	SetCurrentShader(lightShader);
+	SetShaderLight(*light);
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
+		"cameraPos"), 1, (float*)&camera->GetPosition());
+
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
+		"diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
+		"cubeTex"), 2);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+
+	float heightX = (RAW_WIDTH * HEIGHTMAP_X / 2);
+
+	float heightY = 256 * HEIGHTMAP_Y / 3;
+
+	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z / 2);
+
+	modelMatrix =
+		Matrix4::Translation(Vector3(heightX, heightY, heightZ)) *
+		Matrix4::Scale(Vector3(heightX, 1, heightZ)) *
+		Matrix4::Rotation(90, Vector3(1, 0, 0));
+
+	textureMatrix = Matrix4::Scale(Vector3(10, 10, 10)) *
+		Matrix4::Rotation(waterRotate, Vector3(0, 0, 1));
+
+	UpdateShaderMatrices();
+	quad->Draw();
+	glUseProgram(0);
+}
 void Renderer::SwapTerrainTex()
 {
 	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"doge.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));

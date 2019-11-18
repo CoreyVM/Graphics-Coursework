@@ -1,5 +1,3 @@
-﻿  Main.cpp
-  Renderer.cpp
-  Tree.cpp
-  Generating Code...
+﻿  Renderer.cpp
+C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(274,39): warning C4305: 'initializing': truncation from 'double' to 'float'
   GraphicsCoursework.vcxproj -> C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\GraphicsCoursework.exe

@@ -30,7 +30,7 @@ class Renderer : public OGLRenderer
 //	void ClearNodeLists();
 //	void DrawNodes();
 
-
+	void DrawWater();
 	void SwapTerrainTex();
 	void DrawMesh();
 	void DrawSkyBox();
@@ -56,7 +56,7 @@ class Renderer : public OGLRenderer
 
 	Mesh* quad;
 	Light* light;
-
+	float waterRotate;
 
 
 	Shader* standShader;
