@@ -25,11 +25,6 @@ class Renderer : public OGLRenderer
 	virtual void RenderScene();
 	virtual void UpdateScene(float msec);
 
-//	void BuildNodeLists(SceneNode* from);
-//	void SortNodeLists();
-//	void ClearNodeLists();
-//	void DrawNodes();
-
 	void DrawWater();
 	void SwapTerrainTex();
 	void DrawMesh();

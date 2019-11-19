@@ -11,6 +11,7 @@ public:
 	Mesh(void);
 	~Mesh(void);
 
+	
 	virtual void Draw();
 	void SetTexture(GLuint tex) { texture = tex; }
 	void SetBumpMap(GLuint tex) { bumpTexture = tex; }
@@ -19,6 +20,9 @@ public:
 	static Mesh* GenerateQuad();
 	GLuint GetTexture() { return texture; }
 	GLuint GetBumpMap() { return bumpTexture; }
+	void CreateNormals();
+	void CreateBufferData();
+	
 protected:
 	void BufferData();
 	void GenerateNormals();

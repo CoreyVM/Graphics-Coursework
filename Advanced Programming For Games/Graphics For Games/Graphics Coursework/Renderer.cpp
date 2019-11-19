@@ -12,17 +12,18 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	Tree::CreateSphere();
 	
 	
+	
 	heightMap = new HeightMap(TEXTUREDIR"Nmap.raw"); //Must used a normal map with the software GIMP and have a size of 256 * 267
 	camera = new Camera(-40, 270, Vector3(-2100, 3300, 2000));
 	quad = Mesh::GenerateQuad();
 	
 	
-	currentShader = new Shader(SHADERDIR "SceneVertex.glsl",
-		SHADERDIR "SceneFragment.glsl");
+	currentShader = new Shader(SHADERDIR "PerPixelVertex.glsl",
+		SHADERDIR "PerPixelFragment.glsl");
 	
 	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f),
 		500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
-		Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X) / 2);
+		Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X));
 	
 	standShader = new  Shader(SHADERDIR"SceneVertex.glsl", 
 		SHADERDIR"SceneFragment.glsl");
@@ -49,13 +50,28 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 
 		quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"water.tga",
 		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
-
+	/*
 	cubeMap = SOIL_load_OGL_cubemap(
 		TEXTUREDIR"rusted_west.jpg", TEXTUREDIR"rusted_east.jpg",
 		TEXTUREDIR"rusted_up.jpg", TEXTUREDIR"rusted_down.jpg",
 		TEXTUREDIR"rusted_south.jpg", TEXTUREDIR"rusted_north.jpg",
 		SOIL_LOAD_RGB,
 		SOIL_CREATE_NEW_ID, 0);
+	*/
+
+	cubeMap = SOIL_load_OGL_cubemap(   //nightwalker-id_rt.png
+		TEXTUREDIR"nightwalker-id_ft.png", TEXTUREDIR"nightwalker-id_bk.png",
+		TEXTUREDIR"nightwalker-id_up.png", TEXTUREDIR"nightwalker-id_dn.png",
+		TEXTUREDIR"nightwalker-id_rt.png", TEXTUREDIR"nightwalker-id_lf.png",
+		SOIL_LOAD_RGB,
+		SOIL_CREATE_NEW_ID, 0);
+
+
+
+
+
+
+
 	currentShader = new Shader(SHADERDIR "TexturedVertex.glsl", SHADERDIR "TexturedFragment.glsl");
 
 	if (!currentShader->LinkProgram())
@@ -63,14 +79,15 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		return;
 	}
 
-	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
-
+	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"Sand.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+	heightMap->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"SandNormal.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	modelMatrix = Matrix4::Translation(Vector3(100, 0, 100));
-	if (!heightMap->GetTexture())
+	if (!heightMap->GetBumpMap())
 	{
 		return;
 	}
 	SetTextureRepeating(heightMap->GetTexture(), true);
+	SetTextureRepeating(heightMap->GetBumpMap(), true);
 	SetTextureRepeating(quad->GetTexture(), true);
 
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
@@ -83,8 +100,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	root->AddChild(new Tree());
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	waterRotate = 0;
 	init = true;
@@ -170,14 +187,26 @@ void Renderer::RenderScene() {
 	SortNodeLists();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glUseProgram(currentShader->GetProgram());
-	//UpdateShaderMatrices();
 
+	glUseProgram(currentShader->GetProgram());
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
+		"diffuseTex"), 0);
+
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
+		"cameraPos"), 1, (float*)&camera->GetPosition());
+
+	UpdateShaderMatrices();
+	SetShaderLight(*light);
+
+
+	//UpdateShaderMatrices();
+	//SetShaderLight(*light);
 	DrawSkyBox();
 	DrawWater();
 	DrawHeightMap();
 	DrawMesh();
 	DrawNodes();
+
 	glUseProgram(0);
 	SwapBuffers();
 	ClearNodeLists();
@@ -208,7 +237,8 @@ void Renderer::DrawHeightMap()
 void Renderer::DrawMesh()
 {
 	modelMatrix.ToIdentity();
-	SetCurrentShader(currentShader);
+	SetCurrentShader(lightShader);
+	SetShaderLight(*light);
 	UpdateShaderMatrices();
 	                                  //Fwd/Bwd   //Height  //Left and Right
 	modelMatrix = Matrix4::Translation(Vector3(1600, 500, 2500));
@@ -219,18 +249,18 @@ void Renderer::DrawMesh()
 
 void Renderer::DrawNode(SceneNode* n)
 {
-	
 	if (n->GetMesh())
 	{
-		SetCurrentShader(currentShader);
-		SetShaderLight(*light);
+		glUseProgram(currentShader->GetProgram());
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*) & (n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale())));
 
 		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
 
 		glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)n->GetMesh()->GetTexture());
-
+		SetCurrentShader(lightShader);
+		SetShaderLight(*light);
 		n->Draw(*this);
+
 	}
 
 }
@@ -256,7 +286,7 @@ void Renderer::DrawSkyBox()
 
 void Renderer::DrawWater()
 {
-	SetCurrentShader(lightShader);
+	SetCurrentShader(reflectShader);
 	SetShaderLight(*light);
 	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
 		"cameraPos"), 1, (float*)&camera->GetPosition());

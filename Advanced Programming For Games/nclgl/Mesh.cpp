@@ -94,6 +94,10 @@ Mesh::~Mesh(void)
 		return m;
 	}
 
+	void Mesh::CreateBufferData()
+	{
+		BufferData();
+	}
 
 	void Mesh::BufferData()
 	{
@@ -176,6 +180,10 @@ Mesh::~Mesh(void)
 
 	}
 
+	void Mesh::CreateNormals()
+	{
+		GenerateNormals();
+	}
 	void Mesh::GenerateNormals() 
 	{
 		if (!normals) {
