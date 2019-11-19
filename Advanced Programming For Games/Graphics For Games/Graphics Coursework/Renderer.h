@@ -14,6 +14,7 @@
 #include "EyeTower.h"
 #include "Tree.h"
 #include <algorithm>
+#include "Pyramid.h"
 
 class Renderer : public OGLRenderer
 {

@@ -10,7 +10,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	Dragon::CreateMesh();
 	Tree::CreateTrunk();
 	Tree::CreateSphere();
-	
+	Pyramid::CreatePyramid();
 	
 	
 	heightMap = new HeightMap(TEXTUREDIR"Nmap.raw"); //Must used a normal map with the software GIMP and have a size of 256 * 267
@@ -23,7 +23,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	
 	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f),
 		500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
-		Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X));
+		Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X) * 3);
 	
 	standShader = new  Shader(SHADERDIR"SceneVertex.glsl", 
 		SHADERDIR"SceneFragment.glsl");
@@ -90,7 +90,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	SetTextureRepeating(heightMap->GetBumpMap(), true);
 	SetTextureRepeating(quad->GetTexture(), true);
 
-	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+	projMatrix = Matrix4::Perspective(1.0f, 30000.0f,
 		(float)width / (float)height, 45.0f);
 
 	
@@ -98,6 +98,10 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 //	root->AddChild(new Dragon());
 //	root->AddChild(new EyeTower());
 	root->AddChild(new Tree());
+	root->AddChild(new Pyramid());
+	root->AddChild(new Pyramid(Vector3(-4000, -100, 2100), Vector3(1500, 1500, 1500)));
+	root->AddChild(new Pyramid(Vector3(2250, -100, 8000), Vector3(1500, 1500, 1500)));
+	root->AddChild(new Pyramid(Vector3(2250, -100, -4000), Vector3(1500, 1500, 1500)));
 
 	glEnable(GL_DEPTH_TEST);
 //	glEnable(GL_BLEND);
@@ -121,6 +125,7 @@ Renderer ::~Renderer(void)
 	delete hellNode;
 	delete hellData;
 
+	Pyramid::DeletePyramid();
 	Dragon::DeleteMesh();
 	Tree::DeleteMeshes();
 	currentShader = 0;
@@ -197,10 +202,6 @@ void Renderer::RenderScene() {
 
 	UpdateShaderMatrices();
 	SetShaderLight(*light);
-
-
-	//UpdateShaderMatrices();
-	//SetShaderLight(*light);
 	DrawSkyBox();
 	DrawWater();
 	DrawHeightMap();
@@ -299,14 +300,14 @@ void Renderer::DrawWater()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
 
-	float heightX = (RAW_WIDTH * HEIGHTMAP_X / 2);
+	float heightX = (RAW_WIDTH * HEIGHTMAP_X ) * 3;
 
 	float heightY = 256 * HEIGHTMAP_Y / 3;
 
-	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z / 2);
+	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z * 3);
 
 	modelMatrix =
-		Matrix4::Translation(Vector3(heightX, heightY, heightZ)) *
+		Matrix4::Translation(Vector3(0, 0, 0)) *
 		Matrix4::Scale(Vector3(heightX, 1, heightZ)) *
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 

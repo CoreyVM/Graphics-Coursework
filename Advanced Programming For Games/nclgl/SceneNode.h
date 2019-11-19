@@ -36,6 +36,8 @@ public:
 
 	Mesh* GetMesh() const { return mesh; }
 	void SetMesh(Mesh*m) { mesh = m; }
+	
+	GLuint GetTexture() { return mesh->GetTexture(); }
 
 	void AddChild(SceneNode*s);
 
