@@ -16,6 +16,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Window.h"
 #include "Matrix4.h"
 #include "Vector3.h"
+#include <vector>
 
 class Camera	{
 public:
@@ -28,6 +29,12 @@ public:
 		this->pitch		= pitch;
 		this->yaw		= yaw;
 		this->position	= position;
+		cameraPoints.push_back(new Vector3(500, 1500, 500));
+		cameraPoints.push_back(new Vector3(1800, 1300, 400));
+		cameraPoints.push_back(new Vector3(2200, 1800, 800));
+		cameraIndex = 0;
+		removeIndex = false;
+		FinishedTrack = false;
 	}
 
 	~Camera(void){};
@@ -53,8 +60,17 @@ public:
 	//Sets pitch, in degrees
 	void	SetPitch(float p) {pitch = p;}
 
+	int cameraIndex;
+	void ComparePositions();
+	void MoveToPoint();
+	
 protected:
 	float	yaw;
 	float	pitch;
 	Vector3 position;
+
+	bool removeIndex;
+	bool FinishedTrack;
+
+	vector<Vector3*> cameraPoints;
 };
