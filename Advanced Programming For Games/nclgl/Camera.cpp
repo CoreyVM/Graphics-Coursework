@@ -9,10 +9,9 @@ void Camera::UpdateCamera(float msec) {
 
 	ComparePositions();
 
-
 	//Update the mouse by how much
-	pitch -= (Window::GetMouse()->GetRelativePosition().y);
-	yaw -= (Window::GetMouse()->GetRelativePosition().x);
+//	pitch -= (Window::GetMouse()->GetRelativePosition().y);
+//	yaw -= (Window::GetMouse()->GetRelativePosition().x);
 
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = min(pitch, 90.0f);
@@ -73,42 +72,69 @@ void Camera::ComparePositions()
 		else if (position == *cameraPoints[cameraIndex])
 		{
 			cameraIndex++;
-		
 		}
+	}
+}
+void Camera::IncreaseYaw(int index)
+{
+	switch (index)
+	{
+	case 0:
+		//SetYaw(90);
+		break;
+	case 1:
+		SetYaw(90);
+		break;
+
+	case 2:
+		SetYaw(360);
+		break;
+
+	case 3:
+		SetYaw(313);
+		break;
 	}
 }
 
 void Camera::MoveToPoint()
 {
-	if (cameraPoints[0] != NULL && !FinishedTrack)
+	if (cameraPoints[cameraIndex] != NULL && !FinishedTrack)
 	{
+	
+		IncreaseYaw(cameraIndex);
 		Vector3 currentPoint = *cameraPoints[cameraIndex];
 		if (position.x < cameraPoints[cameraIndex]->x)
 		{
 			position.x += 5;
+	
 		}
 		else if (position.x > cameraPoints[cameraIndex]->x)
 		{
 			position.x -= 5;
+		
 		}
 
 		if (position.y > cameraPoints[cameraIndex]->y)
 		{
 			position.y -= 5;
+		
 		}
 
-		else	if (position.y < cameraPoints[cameraIndex]->y)
+		else if (position.y < cameraPoints[cameraIndex]->y)
 		{
 			position.y += 5;
+		
 		}
 
 		if (position.z > cameraPoints[cameraIndex]->z)
 		{
 			position.z -= 5;
+		
 		}
-		else	if (position.z < cameraPoints[cameraIndex]->z)
+		else if (position.z < cameraPoints[cameraIndex]->z)
 		{
 			position.z += 5;
+		
 		}
 	}
 

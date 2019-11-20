@@ -2,15 +2,16 @@
 
 Mesh* Pyramid::mesh = NULL;
 
-Pyramid::Pyramid(Vector3 _position, Vector3 _scale)
+Pyramid::Pyramid(Vector3 _position, Vector3 _scale, int boundingRadius)
 {
 
 	this->root = new SceneNode(mesh);
 	this->root->SetModelScale(_scale);
 	this->root->SetTransform(Matrix4::Translation(_position) * Matrix4::Rotation(270, Vector3(1, 0, 0)));
-	this->root->SetBoundingRadius(500);
+	this->root->SetBoundingRadius(boundingRadius);
 	AddChild(root);
 	timer = 1;
+	PreTimer = 0;
 }
 
 Pyramid::Pyramid()
@@ -21,6 +22,7 @@ Pyramid::Pyramid()
 	root->SetBoundingRadius(500);
 	AddChild(root);
 	timer = 1;
+	PreTimer = 0;
 }
 
 Pyramid::~Pyramid()
@@ -30,7 +32,14 @@ Pyramid::~Pyramid()
 
 void Pyramid::Update(float msec)
 {
-	if (timer < 1600)
+
+	if (PreTimer < 4010)
+	{
+		PreTimer += 1;
+		std::cout << PreTimer << endl;
+	}
+
+	if (timer < 1600 &&  PreTimer >= 4010)
 	{
 		root->SetTransform(Matrix4::Translation(Vector3(root->GetTransform().GetPositionVector().x, root->GetTransform().GetPositionVector().y + 1, root->GetTransform().GetPositionVector().z)) * Matrix4::Rotation(270, Vector3(1, 0, 0)));
 		timer += 1;

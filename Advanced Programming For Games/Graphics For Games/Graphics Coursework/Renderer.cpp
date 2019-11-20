@@ -99,9 +99,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 //	root->AddChild(new EyeTower());
 	root->AddChild(new Tree());
 	root->AddChild(new Pyramid());
-	root->AddChild(new Pyramid(Vector3(-4000, -100, 2100), Vector3(1500, 1500, 1500)));
-	root->AddChild(new Pyramid(Vector3(2250, -100, 8000), Vector3(1500, 1500, 1500)));
-	root->AddChild(new Pyramid(Vector3(2250, -100, -4000), Vector3(1500, 1500, 1500)));
+	root->AddChild(new Pyramid(Vector3(-4000, -100, 2100), Vector3(1500, 1500, 1500), 10000));
+	root->AddChild(new Pyramid(Vector3(2250, -100, 8000), Vector3(1500, 1500, 1500),10000));
+	root->AddChild(new Pyramid(Vector3(2250, -100, -4000), Vector3(1500, 1500, 1500),10000));
 
 	glEnable(GL_DEPTH_TEST);
 //	glEnable(GL_BLEND);
@@ -300,14 +300,14 @@ void Renderer::DrawWater()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
 
-	float heightX = (RAW_WIDTH * HEIGHTMAP_X ) * 3;
+	float heightX = (RAW_WIDTH * HEIGHTMAP_X ) * 4;
 
 	float heightY = 256 * HEIGHTMAP_Y / 3;
 
-	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z * 3);
+	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z * 4);
 
 	modelMatrix =
-		Matrix4::Translation(Vector3(0, 0, 0)) *
+		Matrix4::Translation(Vector3(0, 80, 0)) *
 		Matrix4::Scale(Vector3(heightX, 1, heightZ)) *
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 

@@ -5,7 +5,7 @@
 class Pyramid : public SceneNode
 {
 public:
-	Pyramid(Vector3 _position, Vector3 _scale);
+	Pyramid(Vector3 _position, Vector3 _scale, int boundingRadius);
 	Pyramid();
 	~Pyramid();
 
@@ -32,6 +32,7 @@ public:
 protected:
 	SceneNode* root;
 	static Mesh* mesh;
+	int PreTimer;
 	int timer;
 };
 

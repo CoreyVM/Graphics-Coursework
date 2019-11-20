@@ -29,9 +29,11 @@ public:
 		this->pitch		= pitch;
 		this->yaw		= yaw;
 		this->position	= position;
-		cameraPoints.push_back(new Vector3(500, 1500, 500));
-		cameraPoints.push_back(new Vector3(1800, 1300, 400));
-		cameraPoints.push_back(new Vector3(2200, 1800, 800));
+		cameraPoints.push_back(new Vector3(4000, 1300, 400));
+		cameraPoints.push_back(new Vector3(4800, 1300, 3600));
+		cameraPoints.push_back(new Vector3(280, 1300, 5000));
+		cameraPoints.push_back(new Vector3(-6155, 7383, 9420));
+
 		cameraIndex = 0;
 		removeIndex = false;
 		FinishedTrack = false;
@@ -63,6 +65,8 @@ public:
 	int cameraIndex;
 	void ComparePositions();
 	void MoveToPoint();
+
+	void IncreaseYaw(int index);
 	
 protected:
 	float	yaw;
