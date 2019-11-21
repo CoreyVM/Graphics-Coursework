@@ -29,14 +29,16 @@ public:
 		this->pitch		= pitch;
 		this->yaw		= yaw;
 		this->position	= position;
-		cameraPoints.push_back(new Vector3(4000, 1300, 400));
-		cameraPoints.push_back(new Vector3(4800, 1300, 3600));
-		cameraPoints.push_back(new Vector3(280, 1300, 5000));
-		cameraPoints.push_back(new Vector3(-6155, 7383, 9420));
+		
+		cameraPoints.push_back(new Vector3(4000, 500, 400));
+		cameraPoints.push_back(new Vector3(4800, 500, 3600));
+		cameraPoints.push_back(new Vector3(280, 500, 5000));
+		cameraPoints.push_back(new Vector3(-6155, 7380, 9420));
 
 		cameraIndex = 0;
 		removeIndex = false;
 		FinishedTrack = false;
+		usingTrack = true;
 	}
 
 	~Camera(void){};
@@ -73,6 +75,7 @@ protected:
 	float	pitch;
 	Vector3 position;
 
+	bool usingTrack;
 	bool removeIndex;
 	bool FinishedTrack;
 

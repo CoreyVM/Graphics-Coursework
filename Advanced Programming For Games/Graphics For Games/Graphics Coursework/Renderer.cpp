@@ -48,7 +48,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		return;
 	}
 
-		quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"water.tga",
+		quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"WaterSeam.jpg",
 		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	/*
 	cubeMap = SOIL_load_OGL_cubemap(
@@ -311,7 +311,7 @@ void Renderer::DrawWater()
 		Matrix4::Scale(Vector3(heightX, 1, heightZ)) *
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 
-	textureMatrix = Matrix4::Scale(Vector3(10, 10, 10)) *
+	textureMatrix = Matrix4::Scale(Vector3(5, 5, 5)) *
 		Matrix4::Rotation(waterRotate, Vector3(0, 0, 1));
 
 	UpdateShaderMatrices();
