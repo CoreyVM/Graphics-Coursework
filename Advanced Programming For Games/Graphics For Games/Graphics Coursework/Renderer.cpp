@@ -17,9 +17,10 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	camera = new Camera(-40, 270, Vector3(-2100, 3300, 2000));
 	quad = Mesh::GenerateQuad();
 	
-	
-	currentShader = new Shader(SHADERDIR "PerPixelVertex.glsl",
-		SHADERDIR "PerPixelFragment.glsl");
+#pragma region Shader Initialisation
+
+	currentShader = new Shader(SHADERDIR "PerPixelLightVertex.glsl",
+		SHADERDIR "PerPixelLightFragment.glsl");
 	
 	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f),
 		500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
@@ -28,12 +29,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	standShader = new  Shader(SHADERDIR"SceneVertex.glsl", 
 		SHADERDIR"SceneFragment.glsl");
 
-	hellData = new MD5FileData(MESHDIR "hellknight.md5mesh");
-	hellNode = new MD5Node(*hellData);
-
-	hellData->AddAnim(MESHDIR "idle2.md5anim");
-	hellNode->PlayAnim(MESHDIR "idle2.md5anim");
-
+	
 	reflectShader = new Shader(SHADERDIR"PerPixelVertex.glsl",
 		SHADERDIR"reflectFragment.glsl");
 
@@ -43,21 +39,26 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	lightShader = new Shader(SHADERDIR"PerPixelVertex.glsl",
 		SHADERDIR"PerPixelFragment.glsl");
 
-	if (!reflectShader->LinkProgram() || !lightShader->LinkProgram() || !skyboxShader->LinkProgram())
-	{
-		return;
-	}
+	bumpShader = new Shader(SHADERDIR "PerPixelVertex.glsl",
+		SHADERDIR "PerPixelFragment.glsl");
 
-		quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"WaterSeam.jpg",
-		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
-	/*
-	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"rusted_west.jpg", TEXTUREDIR"rusted_east.jpg",
-		TEXTUREDIR"rusted_up.jpg", TEXTUREDIR"rusted_down.jpg",
-		TEXTUREDIR"rusted_south.jpg", TEXTUREDIR"rusted_north.jpg",
-		SOIL_LOAD_RGB,
-		SOIL_CREATE_NEW_ID, 0);
-	*/
+
+
+	//currentShader = new Shader(SHADERDIR "TexturedVertex.glsl", SHADERDIR "TexturedFragment.glsl");
+
+	if (!currentShader->LinkProgram() || !bumpShader->LinkProgram() || !reflectShader->LinkProgram() || !lightShader->LinkProgram() || !skyboxShader->LinkProgram()) { return; }
+#pragma endregion
+
+	hellData = new MD5FileData(MESHDIR "hellknight.md5mesh");
+	hellNode = new MD5Node(*hellData);
+
+	hellData->AddAnim(MESHDIR "idle2.md5anim");
+	hellNode->PlayAnim(MESHDIR "idle2.md5anim");
+
+
+
+	quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"WaterSeam.jpg",
+	SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 
 	cubeMap = SOIL_load_OGL_cubemap(   //nightwalker-id_rt.png
 		TEXTUREDIR"nightwalker-id_ft.png", TEXTUREDIR"nightwalker-id_bk.png",
@@ -68,31 +69,17 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 
 
 
-
-
-
-
-	currentShader = new Shader(SHADERDIR "TexturedVertex.glsl", SHADERDIR "TexturedFragment.glsl");
-
-	if (!currentShader->LinkProgram())
-	{
-		return;
-	}
-
 	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"Sand.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	heightMap->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"SandNormal.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	modelMatrix = Matrix4::Translation(Vector3(100, 0, 100));
-	if (!heightMap->GetBumpMap())
-	{
-		return;
-	}
+
 	SetTextureRepeating(heightMap->GetTexture(), true);
 	SetTextureRepeating(heightMap->GetBumpMap(), true);
 	SetTextureRepeating(quad->GetTexture(), true);
 
 	projMatrix = Matrix4::Perspective(1.0f, 30000.0f,
 		(float)width / (float)height, 45.0f);
-
+	
 	
 	root = new SceneNode();
 //	root->AddChild(new Dragon());
@@ -100,6 +87,16 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	root->AddChild(new Tree());
 	root->AddChild(new Pyramid());
 	root->AddChild(new Pyramid(Vector3(-4000, -100, 2100), Vector3(1500, 1500, 1500), 10000));
+	for (int i = 1; i < 6; i++)
+	{
+		for (int x = 1; x < 6; x++)
+		{
+			int temp;
+			temp = rand();
+			
+			root->AddChild(new Tree(Vector3(700 * i, rand() % 300,  700 * x),temp, 180));
+		}
+	}
 	root->AddChild(new Pyramid(Vector3(2250, -100, 8000), Vector3(1500, 1500, 1500),10000));
 	root->AddChild(new Pyramid(Vector3(2250, -100, -4000), Vector3(1500, 1500, 1500),10000));
 
@@ -116,10 +113,13 @@ Renderer ::~Renderer(void)
 	delete heightMap;
 	delete camera;
 	delete root;
+
 	delete skyboxShader;
 	delete reflectShader;
 	delete lightShader;
 	delete standShader;
+	delete bumpShader;
+
 	delete quad;
 	delete light;
 	delete hellNode;
@@ -191,21 +191,10 @@ void Renderer::RenderScene() {
 	BuildNodesLists(root);
 	SortNodeLists();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
 
-	glUseProgram(currentShader->GetProgram());
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-		"diffuseTex"), 0);
-
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"cameraPos"), 1, (float*)&camera->GetPosition());
-
-	UpdateShaderMatrices();
-	SetShaderLight(*light);
 	DrawSkyBox();
 	DrawWater();
 	DrawHeightMap();
-	DrawMesh();
 	DrawNodes();
 
 	glUseProgram(0);
@@ -215,24 +204,22 @@ void Renderer::RenderScene() {
 
 void Renderer::DrawHeightMap()
 {
-	SetCurrentShader(lightShader);
+	SetCurrentShader(bumpShader);
 	SetShaderLight(*light);
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0);
 
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"cameraPos"), 1, (float*)&camera->GetPosition());
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "bumpTex"), 1);
 
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"diffuseTex"), 1, (float*)&camera->GetPosition());
-
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"bumpTex"), 1, (float*)&camera->GetPosition());
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
 
 	modelMatrix.ToIdentity();
 	textureMatrix.ToIdentity();
 
+
 	UpdateShaderMatrices();
 	heightMap->Draw();
-	glUseProgram(0);
+
+	//glUseProgram(0);
 }
 
 void Renderer::DrawMesh()
@@ -250,6 +237,9 @@ void Renderer::DrawMesh()
 
 void Renderer::DrawNode(SceneNode* n)
 {
+	SetCurrentShader(bumpShader);
+	SetShaderLight(*light);
+
 	if (n->GetMesh())
 	{
 		glUseProgram(currentShader->GetProgram());
@@ -258,8 +248,9 @@ void Renderer::DrawNode(SceneNode* n)
 		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
 
 		glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)n->GetMesh()->GetTexture());
-		SetCurrentShader(lightShader);
-		SetShaderLight(*light);
+
+
+
 		n->Draw(*this);
 
 	}

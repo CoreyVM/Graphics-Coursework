@@ -99,6 +99,10 @@ Mesh::~Mesh(void)
 		BufferData();
 	}
 
+	void Mesh::CreateTangents()
+	{
+		GenerateTangents();
+	}
 	void Mesh::BufferData()
 	{
 		glBindVertexArray(arrayObject);

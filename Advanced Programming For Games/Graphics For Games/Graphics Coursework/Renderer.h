@@ -59,6 +59,8 @@ class Renderer : public OGLRenderer
 	Shader* lightShader;
 	Shader* reflectShader;
 	Shader* skyboxShader;
+	Shader* bumpShader;
+
 	Frustum frameFrustum;
 
 	vector<SceneNode*> nodeList; //Vector of scenenode objects

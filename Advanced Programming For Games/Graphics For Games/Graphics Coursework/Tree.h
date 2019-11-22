@@ -7,7 +7,7 @@
 class Tree : public SceneNode
 {
 public:
-
+	Tree(Vector3 _position, int angle, int trunkSize);
 	Tree();
 	~Tree(void)
 	{
@@ -26,6 +26,7 @@ public:
 			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 		cube = m;
 		cube->CreateNormals();
+		cube->CreateTangents();
 		cube->CreateBufferData();
 
 	}
@@ -37,6 +38,7 @@ public:
 			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 		sphere = s;
 		sphere->CreateNormals();
+		sphere->CreateTangents();
 		sphere->CreateBufferData();
 	}
 
@@ -48,6 +50,8 @@ public:
 
 	void CreateSceneBranches();
 	void CreateSceneBrushes();
+	void SetBoundingRadius();
+
 	void Update(float msec);
 	
 protected:

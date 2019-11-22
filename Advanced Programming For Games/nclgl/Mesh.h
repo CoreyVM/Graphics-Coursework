@@ -21,6 +21,7 @@ public:
 	GLuint GetTexture() { return texture; }
 	GLuint GetBumpMap() { return bumpTexture; }
 	void CreateNormals();
+	void CreateTangents();
 	void CreateBufferData();
 	
 protected:

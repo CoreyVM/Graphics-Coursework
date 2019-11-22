@@ -2,6 +2,17 @@
 Mesh* Tree::cube = NULL;
 Mesh* Tree::sphere = NULL;
 
+Tree::Tree(Vector3 position, int angle , int trunkSize)
+{
+	root = new SceneNode(cube);   //Branch size
+	root->SetModelScale(Vector3(30, trunkSize, 30));  //    root->SetModelScale(Vector3(30, 130, 30));
+	root->SetTransform(Matrix4::Translation(position) * Matrix4::Rotation(angle, Vector3(0, 1, 0)));
+	AddChild(root);
+	CreateSceneBranches();
+	CreateSceneBrushes();
+	SetBoundingRadius();
+}
+
 Tree::Tree()
 {
 	
@@ -12,11 +23,16 @@ Tree::Tree()
 	AddChild(root);
 	CreateSceneBranches();
 	CreateSceneBrushes();
+	SetBoundingRadius();
 
-	root->SetBoundingRadius(5000);
 	
+	
+}
 
-	rightBranch->SetBoundingRadius(5000);
+void Tree::SetBoundingRadius()
+{
+	root->SetBoundingRadius(5000);
+    rightBranch->SetBoundingRadius(5000);
 	leftBranch->SetBoundingRadius(5000);
 
 
@@ -34,8 +50,6 @@ Tree::Tree()
 	backBush1->SetBoundingRadius(5000);
 	backBush2->SetBoundingRadius(5000);
 	backBush3->SetBoundingRadius(5000);
-	
-	
 }
 
 void Tree::CreateSceneBranches()

@@ -38,7 +38,7 @@ public:
 		cameraIndex = 0;
 		removeIndex = false;
 		FinishedTrack = false;
-		usingTrack = true;
+		usingTrack = false; // Was true
 	}
 
 	~Camera(void){};
