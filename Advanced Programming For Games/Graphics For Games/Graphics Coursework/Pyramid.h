@@ -19,6 +19,7 @@ public:
 		mesh = m;
 		mesh = m;
 		mesh->CreateNormals();
+		mesh->CreateTangents();
 		mesh->CreateBufferData();
 	}
 

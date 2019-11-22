@@ -24,6 +24,8 @@ public:
 		m->LoadOBJMesh(MESHDIR"cube.obj"); //TreeBark.JPG
 		m->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"wood.png", // wood.png
 			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+		m->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"woodNormal.png", // wood.png
+			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 		cube = m;
 		cube->CreateNormals();
 		cube->CreateTangents();
@@ -35,6 +37,8 @@ public:
 		OBJMesh* s = new OBJMesh();
 		s->LoadOBJMesh(MESHDIR"othersphere.obj");
 		s->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"green.jpg",
+			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+		s->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"greenNormal2.png",
 			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 		sphere = s;
 		sphere->CreateNormals();

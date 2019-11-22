@@ -7,11 +7,13 @@
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {
+
+#pragma region Create Static Meshes
 	Dragon::CreateMesh();
 	Tree::CreateTrunk();
 	Tree::CreateSphere();
 	Pyramid::CreatePyramid();
-	
+#pragma endregion
 	
 	heightMap = new HeightMap(TEXTUREDIR"Nmap.raw"); //Must used a normal map with the software GIMP and have a size of 256 * 267
 	camera = new Camera(-40, 270, Vector3(-2100, 3300, 2000));
@@ -55,11 +57,6 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	hellData->AddAnim(MESHDIR "idle2.md5anim");
 	hellNode->PlayAnim(MESHDIR "idle2.md5anim");
 
-
-
-	quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"WaterSeam.jpg",
-	SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
-
 	cubeMap = SOIL_load_OGL_cubemap(   //nightwalker-id_rt.png
 		TEXTUREDIR"nightwalker-id_ft.png", TEXTUREDIR"nightwalker-id_bk.png",
 		TEXTUREDIR"nightwalker-id_up.png", TEXTUREDIR"nightwalker-id_dn.png",
@@ -67,7 +64,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		SOIL_LOAD_RGB,
 		SOIL_CREATE_NEW_ID, 0);
 
-
+	quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"WaterSeam.jpg",
+		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 
 	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"Sand.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	heightMap->SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR"SandNormal.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
@@ -218,8 +216,6 @@ void Renderer::DrawHeightMap()
 
 	UpdateShaderMatrices();
 	heightMap->Draw();
-
-	//glUseProgram(0);
 }
 
 void Renderer::DrawMesh()
@@ -248,13 +244,8 @@ void Renderer::DrawNode(SceneNode* n)
 		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
 
 		glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)n->GetMesh()->GetTexture());
-
-
-
 		n->Draw(*this);
-
 	}
-
 }
 
 void Renderer::ClearNodeLists()
@@ -273,7 +264,6 @@ void Renderer::DrawSkyBox()
 
 	glUseProgram(0);
 	glDepthMask(GL_TRUE);
-	
 }
 
 void Renderer::DrawWater()

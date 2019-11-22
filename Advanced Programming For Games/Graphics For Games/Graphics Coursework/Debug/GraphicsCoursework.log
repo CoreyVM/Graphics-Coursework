@@ -1,16 +1,10 @@
-﻿  Dragon.cpp
-  EyeTower.cpp
-  Frustum.cpp
-  Main.cpp
+﻿  Main.cpp
   Pyramid.cpp
   Renderer.cpp
 C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Pyramid.cpp(11,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(97,64): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(97,52): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(97,40): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-  Tree.cpp
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(296,39): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Tree.cpp(8,34): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(95,64): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(95,52): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(95,40): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
   Generating Code...
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Tree.cpp(9,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(294,39): warning C4305: 'initializing': truncation from 'double' to 'float'
   GraphicsCoursework.vcxproj -> C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\GraphicsCoursework.exe
