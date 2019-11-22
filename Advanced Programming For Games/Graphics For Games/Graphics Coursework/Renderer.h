@@ -16,6 +16,9 @@
 #include <algorithm>
 #include "Pyramid.h"
 
+  //was 2048
+#define SHADOWSIZE 2048
+
 class Renderer : public OGLRenderer
 {
  public:
@@ -49,13 +52,18 @@ class Renderer : public OGLRenderer
 	void DrawNode(SceneNode* n);
 	void ClearNodeLists();
 
+	void DrawShadowScene();
+	void DrawCombinedScene();
 
 	Mesh* quad;
 	Light* light;
 	float waterRotate;
 
+	GLuint shadowTex;
+	GLuint shadowFBO;
 
-	Shader* standShader;
+	Shader* sceneShader;
+	Shader* shadowShader;
 	Shader* lightShader;
 	Shader* reflectShader;
 	Shader* skyboxShader;
