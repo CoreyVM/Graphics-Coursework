@@ -1,6 +1,6 @@
 ﻿  Renderer.cpp
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,64): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,52): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,40): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(348,39): warning C4305: 'initializing': truncation from 'double' to 'float'
-  GraphicsCoursework.vcxproj -> C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\GraphicsCoursework.exe
+C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,64): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,52): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(101,40): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Graphics Coursework\Renderer.cpp(352,39): warning C4305: 'initializing': truncation from 'double' to 'float'
+  GraphicsCoursework.vcxproj -> C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\GraphicsCoursework.exe

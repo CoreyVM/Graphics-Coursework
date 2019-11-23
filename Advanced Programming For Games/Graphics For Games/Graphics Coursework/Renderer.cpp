@@ -20,7 +20,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	quad = Mesh::GenerateQuad();
 	
 #pragma region Shader Initialisation
-	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
+	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 2500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
 	Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X));
 	
 	currentShader = new Shader(SHADERDIR "PerPixelLightVertex.glsl", SHADERDIR "PerPixelLightFragment.glsl");
@@ -276,14 +276,18 @@ void Renderer::DrawHeightMap()
 
 void Renderer::DrawMesh()
 {
-	modelMatrix = Matrix4::Translation(Vector3(2500, 200, 2500));
-
+//	modelMatrix.ToIdentity();
+	modelMatrix = Matrix4::Translation(Vector3(400, 300, 400));
 	Matrix4 tempMatrix = textureMatrix * modelMatrix;
-
+	//	glUseProgram(currentShader->GetProgram());  
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "textureMatrix"), 1, false, *&tempMatrix.values);
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*) & (hellNode->GetWorldTransform() * Matrix4::Scale(hellNode->GetModelScale())));
 
-	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, *&modelMatrix.values);
-//	UpdateShaderMatrices();
+
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&hellNode->GetColour());
+
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)hellNode->GetMesh()->GetTexture());
+	UpdateShaderMatrices();
 	hellNode->Draw(*this);
 }
 

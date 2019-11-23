@@ -1,18 +1,1 @@
-﻿  Camera.cpp
-  HeightMap.cpp
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\nclgl\Camera.cpp(74,18): warning C4018: '<': signed/unsigned mismatch
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\nclgl\HeightMap.cpp(26,78): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\nclgl\HeightMap.cpp(26,61): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-  MD5Anim.cpp
-  MD5FileData.cpp
-  MD5Mesh.cpp
-  MD5Node.cpp
-  Mesh.cpp
-  OBJMesh.cpp
-  OGLRenderer.cpp
-  SceneNode.cpp
-  Shader.cpp
-  Window.cpp
-  Generating Code...
-C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\nclgl\HeightMap.cpp(26,33): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-  nclgl.vcxproj -> C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\nclgl.lib
+﻿  nclgl.vcxproj -> C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\Graphics For Games\Debug\nclgl.lib
