@@ -20,8 +20,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	quad = Mesh::GenerateQuad();
 	
 #pragma region Shader Initialisation
-	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 2500, (RAW_HEIGHT * HEIGHTMAP_Z / 2)),
-	Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X));
+	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 5), 3000, (RAW_HEIGHT * HEIGHTMAP_Z)),
+	Vector4(1, 1, 1, 1), (RAW_WIDTH * HEIGHTMAP_X)* 2);
 	
 	currentShader = new Shader(SHADERDIR "PerPixelLightVertex.glsl", SHADERDIR "PerPixelLightFragment.glsl");
 	reflectShader = new Shader(SHADERDIR"PerPixelVertex.glsl", SHADERDIR"reflectFragment.glsl");
@@ -98,7 +98,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 			int temp;
 			temp = rand();
 			
-			root->AddChild(new Tree(Vector3(700 * i, rand() % 300,  700 * x),temp, 180));
+			root->AddChild(new Tree(Vector3(1000 * i, 300,  800 * x),temp, 180));
 		}
 	}
 	root->AddChild(new Pyramid(Vector3(2250, -100, 8000), Vector3(1500, 1500, 1500),10000));
@@ -277,7 +277,7 @@ void Renderer::DrawHeightMap()
 void Renderer::DrawMesh()
 {
 //	modelMatrix.ToIdentity();
-	modelMatrix = Matrix4::Translation(Vector3(400, 300, 400));
+	modelMatrix = Matrix4::Translation(Vector3(400, 200, 1000));
 	Matrix4 tempMatrix = textureMatrix * modelMatrix;
 	//	glUseProgram(currentShader->GetProgram());  
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "textureMatrix"), 1, false, *&tempMatrix.values);

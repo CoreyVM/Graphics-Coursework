@@ -6,8 +6,8 @@
 
 #include "..\..\nclgl\Mesh.h"
 
-#define RAW_WIDTH 257 //257 Original
-#define RAW_HEIGHT 257
+#define RAW_WIDTH 256 //257 Original
+#define RAW_HEIGHT 256
 
 #define HEIGHTMAP_X 16
 #define HEIGHTMAP_Z 16 //16

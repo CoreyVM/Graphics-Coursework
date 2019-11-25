@@ -54,7 +54,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Admin\Desktop\Graphics-Coursework-91805d51fdbb97fe1209a70e30a206102a266c84\Advanced Programming For Games\GLEW\lib\Release;C:\Users\Corey\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;C:\Users\b5000297\Desktop\Git Hub Repos\Graphics-Coursework\Advanced Programming For Games\GLEW\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
