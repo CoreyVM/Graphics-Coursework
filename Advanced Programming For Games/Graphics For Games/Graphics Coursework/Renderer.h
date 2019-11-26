@@ -17,7 +17,7 @@
 #include "Pyramid.h"
 
   //was 2048
-#define SHADOWSIZE 2048
+#define SHADOWSIZE 4096
 
 class Renderer : public OGLRenderer
 {
@@ -28,12 +28,8 @@ class Renderer : public OGLRenderer
 
 	virtual void RenderScene();
 	virtual void UpdateScene(float msec);
-
-	void DrawWater();
 	void SwapTerrainTex();
-	void DrawMesh();
-	void DrawSkyBox();
-	void DrawHeightMap();
+	
 
 	GLuint cubeMap;
 
@@ -44,16 +40,20 @@ class Renderer : public OGLRenderer
 	
 	MD5FileData* hellData;
 	MD5Node* hellNode;
-
-//	OBJMesh* dragonMesh;
 	void  BuildNodesLists(SceneNode* from);
 	void SortNodeLists();
 	void DrawNodes();
 	void DrawNode(SceneNode* n);
 	void ClearNodeLists();
-
+	void SetSpawnIndex();
 	void DrawShadowScene();
 	void DrawCombinedScene();
+	void DrawWater();
+	void DrawMesh();
+	void DrawSkyBox();
+	void DrawHeightMap();
+
+	void SwapAnimation();
 
 	Mesh* quad;
 	Light* light;
@@ -70,7 +70,12 @@ class Renderer : public OGLRenderer
 	Shader* bumpShader;
 
 	Frustum frameFrustum;
-
+	int hellNodeIndex;
+	int cameraTimer;
 	vector<SceneNode*> nodeList; //Vector of scenenode objects
 	vector<SceneNode*> transparentNodeList;
 };
+
+// 1  //  2
+
+// 0     // 4

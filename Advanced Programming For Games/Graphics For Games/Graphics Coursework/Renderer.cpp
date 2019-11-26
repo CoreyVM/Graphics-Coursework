@@ -34,6 +34,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	if (!currentShader->LinkProgram() || !sceneShader->LinkProgram() || !shadowShader->LinkProgram() ||  !bumpShader->LinkProgram() || !reflectShader->LinkProgram() || !lightShader->LinkProgram() || !skyboxShader->LinkProgram()) { return; }
 #pragma endregion
 
+	hellNodeIndex = 0;
 	hellData = new MD5FileData(MESHDIR "hellknight.md5mesh");
 	hellNode = new MD5Node(*hellData);
 
@@ -93,7 +94,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	root->AddChild(new Pyramid(Vector3(-4000, -100, 2100), Vector3(1500, 1500, 1500), 10000));
 	for (int i = 1; i < 4; ++i)
 	{
-		for (int x = 1; x < 6; ++x)
+		for (int x = 1; x < 4; ++x)
 		{
 			int temp;
 			temp = rand();
@@ -107,7 +108,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	waterRotate = 0;
+	cameraTimer = 0;
 	init = true;
+    
 }
 
 Renderer ::~Renderer(void)
@@ -129,7 +132,6 @@ Renderer ::~Renderer(void)
 	delete light;
 	delete hellNode;
 	delete hellData;
-
 	Pyramid::DeletePyramid();
 	Dragon::DeleteMesh();
 	Tree::DeleteMeshes();
@@ -145,6 +147,8 @@ void Renderer::UpdateScene(float msec)
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 	root->Update(msec);
 	waterRotate += msec / 1000;
+	SwapAnimation();
+
 }
 
 void Renderer::BuildNodesLists(SceneNode* from)
@@ -169,7 +173,6 @@ void Renderer::BuildNodesLists(SceneNode* from)
 	{
 		BuildNodesLists((*i));
 	}
-	
 }
 
 void Renderer::SortNodeLists()
@@ -214,23 +217,40 @@ void Renderer::DrawShadowScene()
 
 	SetCurrentShader(shadowShader);
 
-	viewMatrix = Matrix4::BuildViewMatrix(
-		light->GetPosition(), Vector3(0, 0, 0));
+	viewMatrix = Matrix4::BuildViewMatrix(light->GetPosition(), Vector3(0, 0, 0));
 	textureMatrix = biasMatrix * (projMatrix * viewMatrix);
 
 	UpdateShaderMatrices();
 	DrawHeightMap();
 	DrawNodes();
-	DrawMesh();
-
-	
-
+//	DrawMesh();
+	SetSpawnIndex();
 	glUseProgram(0);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glViewport(0, 0, width, height);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//	ClearNodeLists();
+}
+
+void Renderer::SwapAnimation()
+{
+	if (cameraTimer < 1100) { cameraTimer += 1; }
+
+	if (cameraTimer == 1050)
+	{
+		cameraTimer = 1051;
+		hellData->AddAnim(MESHDIR "attack2.md5anim");
+		hellNode->PlayAnim(MESHDIR "attack2.md5anim");
+		std::cout << cameraTimer << std::endl;
+	}
+	if (cameraTimer == 1100)
+	{
+		cameraTimer = 1101;
+		hellData->AddAnim(MESHDIR "idle2.md5anim");
+		hellNode->PlayAnim(MESHDIR "idle2.md5anim");
+		std::cout << cameraTimer << std::endl;
+	}
+	
+
 }
 
 void Renderer::DrawCombinedScene()
@@ -256,36 +276,61 @@ void Renderer::DrawCombinedScene()
 	UpdateShaderMatrices();
 	DrawHeightMap();
 	DrawNodes();
-	DrawMesh();
-
+//	DrawMesh();
+	SetSpawnIndex();
 	glUseProgram(0);
 	ClearNodeLists();
 }
 void Renderer::DrawHeightMap()
 {
-	modelMatrix = Matrix4::Translation(Vector3(0, 0, 0));
+	modelMatrix = Matrix4::Translation(Vector3(0, -10, 0));
 	Matrix4 tempMatrix = textureMatrix * modelMatrix;
-
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "textureMatrix"), 1, false, *&tempMatrix.values);
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, *&modelMatrix.values);
-
-
 	UpdateShaderMatrices();
 	heightMap->Draw();
 }
 
+void Renderer::SetSpawnIndex()
+{
+	switch (hellNodeIndex)
+	{
+	case 0:
+		modelMatrix = Matrix4::Translation(Vector3(200, 200, 200));
+		hellNodeIndex += 1;
+		DrawMesh();
+		SetSpawnIndex();
+		break;
+
+	case 1:
+		modelMatrix = Matrix4::Translation(Vector3(3350, 310, 380));
+		hellNodeIndex += 1;
+		DrawMesh();
+		SetSpawnIndex();
+		break;
+
+	case 2:
+		modelMatrix = Matrix4::Translation(Vector3(2500, 200, 2500));
+		hellNodeIndex += 1;
+		DrawMesh();
+		SetSpawnIndex();
+		break;
+
+	case 3:
+		modelMatrix = Matrix4::Translation(Vector3(200, 200, 2500));
+		hellNodeIndex = 0;
+		DrawMesh();
+		break;
+	}
+}
+
 void Renderer::DrawMesh()
 {
-//	modelMatrix.ToIdentity();
-	modelMatrix = Matrix4::Translation(Vector3(400, 200, 1000));
+//	SetSpawnIndex();
 	Matrix4 tempMatrix = textureMatrix * modelMatrix;
-	//	glUseProgram(currentShader->GetProgram());  
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "textureMatrix"), 1, false, *&tempMatrix.values);
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*) & (hellNode->GetWorldTransform() * Matrix4::Scale(hellNode->GetModelScale())));
-
-
 	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&hellNode->GetColour());
-
 	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)hellNode->GetMesh()->GetTexture());
 	UpdateShaderMatrices();
 	hellNode->Draw(*this);
@@ -294,21 +339,13 @@ void Renderer::DrawMesh()
 
 void Renderer::DrawNode(SceneNode* n)
 {
-//	SetCurrentShader(sceneShader);
-//	SetShaderLight(*light);
-
-	
 	if (n->GetMesh())
 	{
 		modelMatrix.ToIdentity();
 		Matrix4 tempMatrix = textureMatrix * modelMatrix;
-	//	glUseProgram(currentShader->GetProgram());  
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "textureMatrix"), 1, false, *&tempMatrix.values);
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*) & (n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale())));
-	
-
 		glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
-
 		glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)n->GetMesh()->GetTexture());
 		n->Draw(*this);
 	}
@@ -324,10 +361,8 @@ void Renderer::DrawSkyBox()
 {
 	glDepthMask(GL_FALSE);
 	SetCurrentShader(skyboxShader);
-
 	UpdateShaderMatrices();
 	quad->Draw();
-
 	glUseProgram(0);
 	glDepthMask(GL_TRUE);
 }
@@ -365,6 +400,7 @@ void Renderer::DrawWater()
 	quad->Draw();
 	glUseProgram(0);
 }
+
 void Renderer::SwapTerrainTex()
 {
 	heightMap->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR"doge.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));

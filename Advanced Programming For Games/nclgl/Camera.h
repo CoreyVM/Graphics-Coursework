@@ -30,15 +30,15 @@ public:
 		this->yaw		= yaw;
 		this->position	= position;
 		
-		cameraPoints.push_back(new Vector3(4000, 500, 400));
-		cameraPoints.push_back(new Vector3(4800, 500, 3600));
-		cameraPoints.push_back(new Vector3(280, 500, 5000));
+		cameraPoints.push_back(new Vector3(4000, 400, 400));
+		cameraPoints.push_back(new Vector3(4800, 400, 3600));
+		cameraPoints.push_back(new Vector3(280, 400, 5000));
 		cameraPoints.push_back(new Vector3(-6155, 7380, 9420));
 
 		cameraIndex = 0;
 		removeIndex = false;
 		FinishedTrack = false;
-		usingTrack = false; // Was true
+		usingTrack = true; // Was true
 	}
 
 	~Camera(void){};
